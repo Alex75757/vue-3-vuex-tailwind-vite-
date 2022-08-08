@@ -1,7 +1,8 @@
 <script setup>
-import { defineProps, onMounted, computed } from 'vue';
-import { ref } from 'vue';
+import { defineProps} from 'vue';
+import { ref} from 'vue';
 import {useStore} from 'vuex';
+import {mask} from 'vue-the-mask'
 
 const store = useStore();
 
@@ -15,39 +16,38 @@ let phone = ref()
 let email = ref()
 let city = ref(props.city)
 
-
-
 function findCity (city){
       let a= store.state.towns.filter((item) => item.name == city);
       return a[0].id
 }
 
 function formClean(){
-        this.email="";
-        this.fio="";
-        this.city=this.props.city;
-        this.phone="";
+        email.value="";
+        fio.value="";
+        city.value=props.city;
+        phone.value='';
 }
 
 function sendServer(city){
-    if (this.phone.length == 18) {
-        this.phone = "+" + Array.from(this.phone.match(/\d/g)).join('');
+    console.log("phone",phone.value)
+    if (phone.value.length > 17) {
+        phone.value = "+" + Array.from(phone.value.match(/\d/g)).join('');
     
         let id = findCity(city);
         
         let payload = {
-            'name': this.fio,
-            'phone' : this.phone,
-            'email' : this.email,
+            'name': fio.value,
+            'phone' : phone.value,
+            'email' : email.value,
             'city_id': id
         }
         // reverse order payload and data=context
             store.dispatch("fetchServer", payload, 'data');
     } else {
-        console.log(this.phone.length)
         alert("Телефон введен неверно, данные не отправлены");
+        phone.value='';
     }
-    console.log("phone",this.phone)
+    console.log("phone-end",phone.value)
 }
 
 </script>
@@ -83,14 +83,14 @@ function sendServer(city){
                 <div class="grow rounded-md px-2 pb-4">
                     <span class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">Телефон
                     </span>
-                    <!--  v-mask="'+7 (###) ###-##-##'" -->
-                    <input id="phone" v-model="phone" name="phone" type="tel"  autocomplete="on" v-mask="'+7 (###) ###-##-##'" required="true" pattern="+7 (\d{3}) \d{3}-{d2}-{d2}" 
+                    <!--  v-mask="'+7 (###) ###-##-##'" v-model="mask"  pattern="+7 (\d{3}) \d{3}-{d2}-{d2}" -->
+                    <input id="phone"  name="phone" type="tel" v-model="phone" v-mask="'+7 (###) ###-##-##'"  autocomplete="on" required="true" pattern="+7 (\d{3}) \d{3}-{d2}-{d2}"
                             class="peer appearance-none block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md 
                             focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm
                             invalid:border-pink-500 invalid:text-pink-600
                             focus:invalid:border-pink-500 focus:invalid:ring-pink-500" 
-                            placeholder="+7(_ _ _)-_ _ _-_ _-_ _" 
-                            />
+                            placeholder="+7 (_ _ _) _ _ _-_ _-_ _" 
+                            /> 
                     <p class="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
                             Обязательное поле
                     </p>
@@ -144,6 +144,7 @@ function sendServer(city){
                                             formClean();
                                             "
                             >Send form data
+                            <!--     -->
                     </button>
                     <p class="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
                         Заполните поля правильно
