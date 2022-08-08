@@ -69,7 +69,7 @@ function sendServer(city){
                   </button>
            </div>
            <!-- Modal body -->
-           <form class="flex flex-col items-stretch justify-items-stretch justify-end md:flex-row md:flex-wrap " action="#" method="POST">
+           <form class="flex flex-col items-stretch justify-items-stretch justify-end sm:flex-row flex-wrap " action="#" method="POST">
                 <div class="grow rounded-md px-2 pb-4">
                     <span class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-500">Имя
                     </span>
