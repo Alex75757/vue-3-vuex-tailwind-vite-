@@ -50,7 +50,7 @@ function changeFolder(e) {
   let folder = e.target.files[0].webkitRelativePath.split("/")[0]
   store.dispatch('changeFolder',folder)
   files.value = e.target.files
-
+//old school
   let i = 0
   for (let file of files.value) {
     if (file.type.match('image')) {
@@ -58,6 +58,7 @@ function changeFolder(e) {
       i = i+1;
     }
   }
+  // imgs.value = URL.createObjectURL(files.value).filter((file) => file.type.match('image')) 
   store.dispatch('changeImages',imgs)
 }
 
