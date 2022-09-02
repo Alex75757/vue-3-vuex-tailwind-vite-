@@ -1,58 +1,49 @@
 import { createStore } from "vuex";
-import axios from 'axios'
-
-// Requirement: Load data from file
-import initialState from "../assets/data.json";
 
 export default createStore({
   state: {
-    ...initialState,
-    data: {},
-    error: undefined,
-    reply: false,
+    
+    folder: 'what is your folder, teamlead:)',
+    select: '',
+    images: [],
+    
   },
  
-  getters: {
-    
-  },  
-  
   mutations: {
-   
-    SetError (state, error){
-      state.error = error;
+    SetImages (state, images){
+      state.images = images;
+      
     },
-    serverReplyClose(state, close){
-      state.reply = close;
-    }, 
-    toggleShow (state, city) {
-    let a= state.towns.filter((item) => item.name == city);
-     a[0].show = !a[0].show;
+    SetFolder (state, folder){
+      state.folder = folder;
+      localStorage.setItem('currentFolder', folder)
     },
-    saveServerData(state, data){
-     state.data = data;
-     console.log('myData received from server', state.data)
-     state.reply = true;
+    SetSelect (state, select){
+      state.select = select;
+      localStorage.setItem('currentSelect', select)
     },
+    SetStoreFolder(state) {
+      if (localStorage.getItem('currentFolder')){
+        state.folder = localStorage.getItem('currentFolder')
+      }
+    },
+    SetStoreSelect(state) {
+      if (localStorage.getItem('currentSelect')){
+        state.select = localStorage.getItem('currentSelect')
+      }
+    }
   },
+
   actions: {
-    serverReplyClose(state, close){
-      state.commit("serverReplyClose", close);
+    changeImages(data, payload){
+      data.commit("SetImages", payload);
     },
-    toggleShow(data, payload){
-      data.commit("toggleShow", payload);
+    changeFolder(data, payload){
+      data.commit("SetFolder", payload);
     },
-    async fetchServer(context, payload) {
-      // payload = JSON.stringify(payload);
-      console.log('payload to send is', payload)
-      try {
-        const data = await axios.post('http://hh.autodrive-agency.ru/test-tasks/front/task-7/',payload)
-          context.commit('saveServerData', data.data)
-        }
-        catch (error) {
-           context.commit('SetError', error.message)
-        }
-        
-    },
+    changeSelect(data, payload){
+      data.commit("SetSelect", payload);
+    },  
   },
   modules: {},
 });
